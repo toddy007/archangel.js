@@ -1,0 +1,47 @@
+{
+  "name": "archangel.js",
+  "version": "1.0.0",
+  "description": ".",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "tsx src/index.ts",
+    "prettier": "npx prettier --write \"**/*.{js,ts}\"",
+    "build": "npx tsc"
+  },
+  "author": {
+    "name": "Jaelson Kaciel",
+    "email": "jaelsonkaciel4@gmail.com",
+    "url": "https://github.com/toddy007"
+  },
+  "keywords": [
+    "db",
+    "database",
+    "local",
+    "localdb",
+    "localdatabase",
+    "twin"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "discord.js": "^14.26.4",
+    "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "peerDependencies": {
+    "discord.js": "^14.26.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "engines": {
+    "node": ">=21.6.2"
+  }
+}
