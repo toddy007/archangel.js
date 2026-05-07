@@ -1,15 +1,50 @@
-import { Snowflake, Message, ChatInputCommandInteraction, MessageReplyOptions, InteractionReplyOptions, User, MessageEditOptions, InteractionEditReplyOptions, MessagePayload} from 'discord.js';
+import { 
+    Snowflake,
+    Message, 
+    ChatInputCommandInteraction, 
+    MessageReplyOptions, 
+    InteractionReplyOptions, 
+    User, 
+    MessageEditOptions, 
+    InteractionEditReplyOptions, 
+    MessagePayload,
+    InteractionDeferReplyOptions,
+} from 'discord.js';
 
-export class Archangel {
-    private checkContext(context: Context): boolean {
-        if (!(context instanceof Message || context instanceof ChatInputCommandInteraction))
+const invalidContextError = new Error("Context must be a Message or ChatInputCommandInteraction");
+const invalidNameOptionError = new Error("Invalid option 'name': expected a string");
+
+export class NoInitialization {
+    public checkContext(context: Context): context is Context {
+        if (!(this.isMessageContext(context) || this.isInteractionContext(context)))
             return false;
 
         return true;
     }
+
+    public isMessageContext(context: Context): context is Message {
+        return context instanceof Message;
+    }
+
+    public isInteractionContext(context: Context): context is ChatInputCommandInteraction {
+        return context instanceof ChatInputCommandInteraction;
+    }
     
+    public getAuthor(context: Context): User {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isMessageContext(context))
+            return context.author;
+
+        return context.user;
+    }
+
     public reply(context: Context, options: string | MessageReplyOptions | MessagePayload | InteractionReplyOptions, followUpIfReplied: boolean = false) {
-        if (context instanceof ChatInputCommandInteraction) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+        
+        if (this.isInteractionContext(context)) {
             if ((context.replied || context.deferred) && followUpIfReplied)
                 // @ts-ignore
                 return context.followUp(options);
@@ -20,59 +55,254 @@ export class Archangel {
     }
 
     public edit(context: Context, options: string | MessageEditOptions | MessagePayload | InteractionEditReplyOptions) {
-        if (context instanceof ChatInputCommandInteraction)
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isInteractionContext(context))
             return context.editReply(options);
+
+        if (!context.editable)
+            throw new Error("Could not edit the message: context is not editable");
 
         return context.edit(options);
     }
 
     public delete(context: Context, message?: Message | Snowflake) {
-        if (context instanceof ChatInputCommandInteraction)
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isInteractionContext(context))
             return context.deleteReply(message);
 
         if (!context.deletable)
-            throw new Error();
+            throw new Error("Could not delete the message: context is not deletable");
 
         return context.delete();
     }
 
-    public getUser(context: Context, option: number | string = 0, required: boolean = false): User | null {
-        if (context instanceof Message) {
-            if (typeof option === 'string')
-                option = 0;
+    public fetchMessage(context: Context, options: FetchOptions) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
 
-            const user = context.mentions.users.at(option);
+        if (this.isInteractionContext(context))
+            return context.fetchReply(options.messageId);
+
+        return context.fetch(options.force ?? false);
+    }
+
+    public deferReply(context: Context, options: InteractionDeferReplyOptions, ignoreErrorIfMessage: boolean = true) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+        
+        if (this.isMessageContext(context) && ignoreErrorIfMessage)
+            return;
+
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot defer reply: context is not an interaction");
+
+        return context.deferReply(options);
+    }
+
+    public getCommandInfo(context: ChatInputCommandInteraction) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get command info: context is not an interaction");
+
+        const { commandName, commandId, commandGuildId, commandType, options, context: commandContext } = context;
+
+        return {
+            commandName,
+            commandId,
+            commandGuildId,
+            commandType,
+            options,
+            context: commandContext,
+        }
+    }
+
+    public getMentionable(context: Context, options: Options) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isMessageContext(context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const mentionables = {
+                member: context.mentions.members?.at(options.index),
+                role: context.mentions.roles.at(options.index),
+                user: context.mentions.users.at(options.index),
+            };
+
+            return mentionables ?? null;
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        const mentionable = context.options.getMentionable(options.name, options.required ?? false);
+        return mentionable;
+    }
+
+    public getUser(context: Context, options: Options): User | null {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isMessageContext(context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const user = context.mentions.users.at(options.index);
             return user ?? null;
         }
 
-        if (!(context instanceof ChatInputCommandInteraction))
-            throw new Error()
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
 
-        if (typeof option !== 'string')
-            throw new Error()
-
-        const user = context.options.getUser(option, required);
+        const user = context.options.getUser(options.name, options.required ?? false);
         return user;
     }
 
-    public getChannel(context: Context, option: number | string = 0, required: boolean = false) {
-        if (context instanceof Message) {
-            if (typeof option === 'string')
-                option = 0;
+    public getMember(context: Context, options: Omit<Options, 'required'>) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
 
-            const channel = context.mentions.channels.at(option);
+        if (this.isMessageContext(context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const member = context.mentions.members?.at(options.index);
+            return member ?? null;
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        const member = context.options.getMember(options.name);
+        return member;
+    }
+
+    public getRole(context: Context, options: Options) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isMessageContext(context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const role = context.mentions.roles.at(options.index);
+            return role ?? null;
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        const role = context.options.getRole(options.name, options.required ?? false);
+        return role;
+    }
+
+    public getChannel(context: Context, options: Options) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isMessageContext(context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const channel = context.mentions.channels.at(options.index);
             return channel ?? null;
         }
 
-        if (!(context instanceof ChatInputCommandInteraction))
-            throw new Error()
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
 
-        if (typeof option !== 'string')
-            throw new Error()
-
-        const channel = context.options.getChannel(option, required);
+        const channel = context.options.getChannel(options.name, options.required ?? false);
         return channel;
     }
-}
+
+    public getAttachment(context: Context, options: Options) {
+        if (!this.checkContext(context))
+            throw invalidContextError;
+
+        if (this.isMessageContext(context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const attachment = context.attachments.at(options.index);
+            return attachment ?? null;
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        const attachment = context.options.getAttachment(options.name, options.required ?? false);
+        return attachment;
+    }
+
+    public getBoolean(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get boolean: context is not an interaction");
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return context.options.getBoolean(options.name, options.required ?? false);
+    }
+
+
+    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get integer: context is not an interaction");
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return context.options.getInteger(options.name, options.required ?? false);
+    }
+
+    public getNumber(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get number: context is not an interaction");
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return context.options.getNumber(options.name, options.required ?? false);
+    }
+
+    public getString(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get string: context is not an interaction");
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return context.options.getString(options.name, options.required ?? false);
+    }
+
+    public getSubcommand(context: ChatInputCommandInteraction, required: boolean = false) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get subcommand: context is not an interaction");
+
+        return context.options.getSubcommand(required ?? false);
+    }
+
+    public getSubcommandGroup(context: ChatInputCommandInteraction, required: boolean = false) {
+        if (!this.isInteractionContext(context))
+            throw new Error("Cannot get subcommand group: context is not an interaction");
+
+        return context.options.getSubcommandGroup(required ?? false);
+    }
+} // fazer uma opcao pra retornar null inves de erro
 
 type Context = Message | ChatInputCommandInteraction;
+
+interface Options {
+    index?: number;
+    name?: string;
+    required?: boolean;
+}
+
+interface FetchOptions {
+    messageId?: Snowflake;
+    force?: boolean;
+}
