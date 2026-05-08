@@ -10,26 +10,13 @@ import {
     MessagePayload,
     InteractionDeferReplyOptions,
 } from 'discord.js';
+import { Context, Options, FetchOptions } from './global';
+import { Checkers } from './checkers';
 
 const invalidContextError = new Error("Context must be a Message or ChatInputCommandInteraction");
 const invalidNameOptionError = new Error("Invalid option 'name': expected a string");
 
-export abstract class NoInitializer {
-    public checkContext(context: Context): context is Context {
-        if (!(this.isMessageContext(context) || this.isInteractionContext(context)))
-            return false;
-
-        return true;
-    }
-
-    public isMessageContext(context: Context): context is Message {
-        return context instanceof Message;
-    }
-
-    public isInteractionContext(context: Context): context is ChatInputCommandInteraction {
-        return context instanceof ChatInputCommandInteraction;
-    }
-    
+export abstract class NoInitializer extends Checkers {
     public getAuthor(context: Context): User {
         if (!this.checkContext(context))
             throw invalidContextError;
@@ -364,17 +351,4 @@ export abstract class NoInitializer {
 
         return context.options.getSubcommandGroup(required ?? false);
     }
-}
-
-type Context = Message | ChatInputCommandInteraction;
-
-interface Options {
-    index?: number;
-    name?: string;
-    required?: boolean;
-}
-
-interface FetchOptions {
-    messageId?: Snowflake;
-    force?: boolean;
 }
