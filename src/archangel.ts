@@ -14,7 +14,7 @@ import {
 const invalidContextError = new Error("Context must be a Message or ChatInputCommandInteraction");
 const invalidNameOptionError = new Error("Invalid option 'name': expected a string");
 
-export class NoInitialization {
+export abstract class NoInitializer {
     public checkContext(context: Context): context is Context {
         if (!(this.isMessageContext(context) || this.isInteractionContext(context)))
             return false;
@@ -93,19 +93,25 @@ export class NoInitialization {
     public deferReply(context: Context, options: InteractionDeferReplyOptions, ignoreErrorIfMessage: boolean = true) {
         if (!this.checkContext(context))
             throw invalidContextError;
+
+        const notInteraction = this.isMessageContext(context);
         
-        if (this.isMessageContext(context) && ignoreErrorIfMessage)
+        if (notInteraction && ignoreErrorIfMessage)
             return;
 
-        if (!this.isInteractionContext(context))
+        if (notInteraction)
             throw new Error("Cannot defer reply: context is not an interaction");
 
         return context.deferReply(options);
     }
 
-    public getCommandInfo(context: ChatInputCommandInteraction) {
-        if (!this.isInteractionContext(context))
+    public getCommandInfo(context: ChatInputCommandInteraction, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get command info: context is not an interaction");
+        }
 
         const { commandName, commandId, commandGuildId, commandType, options, context: commandContext } = context;
 
@@ -119,7 +125,7 @@ export class NoInitialization {
         }
     }
 
-    public getMentionable(context: Context, options: Options) {
+    public getMentionable(context: Context, options: Options, returnNullIfError: boolean = false) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -136,14 +142,18 @@ export class NoInitialization {
             return mentionables ?? null;
         }
 
-        if (typeof options.name !== 'string')
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
             throw invalidNameOptionError;
+        }
 
         const mentionable = context.options.getMentionable(options.name, options.required ?? false);
         return mentionable;
     }
 
-    public getUser(context: Context, options: Options): User | null {
+    public getUser(context: Context, options: Options, returnNullIfError: boolean = false): User | null {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -155,14 +165,18 @@ export class NoInitialization {
             return user ?? null;
         }
 
-        if (typeof options.name !== 'string')
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
             throw invalidNameOptionError;
+        }
 
         const user = context.options.getUser(options.name, options.required ?? false);
         return user;
     }
 
-    public getMember(context: Context, options: Omit<Options, 'required'>) {
+    public getMember(context: Context, options: Omit<Options, 'required'>, returnNullIfError: boolean = false) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -174,14 +188,18 @@ export class NoInitialization {
             return member ?? null;
         }
 
-        if (typeof options.name !== 'string')
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
             throw invalidNameOptionError;
+        }    
 
         const member = context.options.getMember(options.name);
         return member;
     }
 
-    public getRole(context: Context, options: Options) {
+    public getRole(context: Context, options: Options, returnNullIfError: boolean = false) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -193,14 +211,18 @@ export class NoInitialization {
             return role ?? null;
         }
 
-        if (typeof options.name !== 'string')
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
             throw invalidNameOptionError;
+        }
 
         const role = context.options.getRole(options.name, options.required ?? false);
         return role;
     }
 
-    public getChannel(context: Context, options: Options) {
+    public getChannel(context: Context, options: Options, returnNullIfError: boolean = false) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -212,14 +234,18 @@ export class NoInitialization {
             return channel ?? null;
         }
 
-        if (typeof options.name !== 'string')
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
             throw invalidNameOptionError;
+        }
 
         const channel = context.options.getChannel(options.name, options.required ?? false);
         return channel;
     }
 
-    public getAttachment(context: Context, options: Options) {
+    public getAttachment(context: Context, options: Options, returnNullIfError: boolean = false) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -231,16 +257,24 @@ export class NoInitialization {
             return attachment ?? null;
         }
 
-        if (typeof options.name !== 'string')
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
             throw invalidNameOptionError;
+        }
 
         const attachment = context.options.getAttachment(options.name, options.required ?? false);
         return attachment;
     }
 
-    public getBoolean(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
-        if (!this.isInteractionContext(context))
+    public getBoolean(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get boolean: context is not an interaction");
+        }   
 
         if (typeof options.name !== 'string')
             throw invalidNameOptionError;
@@ -249,9 +283,13 @@ export class NoInitialization {
     }
 
 
-    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
-        if (!this.isInteractionContext(context))
+    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get integer: context is not an interaction");
+        }
 
         if (typeof options.name !== 'string')
             throw invalidNameOptionError;
@@ -259,9 +297,13 @@ export class NoInitialization {
         return context.options.getInteger(options.name, options.required ?? false);
     }
 
-    public getNumber(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
-        if (!this.isInteractionContext(context))
+    public getNumber(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get number: context is not an interaction");
+        }
 
         if (typeof options.name !== 'string')
             throw invalidNameOptionError;
@@ -269,9 +311,13 @@ export class NoInitialization {
         return context.options.getNumber(options.name, options.required ?? false);
     }
 
-    public getString(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>) {
-        if (!this.isInteractionContext(context))
+    public getString(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get string: context is not an interaction");
+        }
 
         if (typeof options.name !== 'string')
             throw invalidNameOptionError;
@@ -279,20 +325,28 @@ export class NoInitialization {
         return context.options.getString(options.name, options.required ?? false);
     }
 
-    public getSubcommand(context: ChatInputCommandInteraction, required: boolean = false) {
-        if (!this.isInteractionContext(context))
+    public getSubcommand(context: ChatInputCommandInteraction, required: boolean = false, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get subcommand: context is not an interaction");
+        }
 
         return context.options.getSubcommand(required ?? false);
     }
 
-    public getSubcommandGroup(context: ChatInputCommandInteraction, required: boolean = false) {
-        if (!this.isInteractionContext(context))
+    public getSubcommandGroup(context: ChatInputCommandInteraction, required: boolean = false, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
             throw new Error("Cannot get subcommand group: context is not an interaction");
+        }
 
         return context.options.getSubcommandGroup(required ?? false);
     }
-} // fazer uma opcao pra retornar null inves de erro
+}
 
 type Context = Message | ChatInputCommandInteraction;
 
