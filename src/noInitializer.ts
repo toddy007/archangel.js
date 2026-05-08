@@ -125,6 +125,24 @@ export abstract class NoInitializer {
         }
     }
 
+    public getOption(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get option: context is not an interaction");
+        }
+
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
+            throw invalidNameOptionError;
+        }
+
+        return context.options.get(options.name, options.required ?? false);
+    }
+
     public getMentionable(context: Context, options: Options, returnNullIfError: boolean = false) {
         if (!this.checkContext(context))
             throw invalidContextError;
