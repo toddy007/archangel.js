@@ -5,6 +5,8 @@ import {
     MessagePayload,
     MessageReplyOptions,
     InteractionReplyOptions,
+    MessageEditOptions,
+    InteractionEditReplyOptions,
 } from 'discord.js';
 import { Checkers } from './checkers';
 
@@ -22,6 +24,13 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         this.context = paramContext;
     }
 
+    get author() {
+        if (this.isMessageContext(this.context))
+            return this.context.author;
+        
+        return this.context.user;
+    }
+
     public reply(options: string | MessagePayload | MessageReplyOptions | InteractionReplyOptions, followUpIfReplied: boolean = false) {
         if (this.isInteractionContext(this.context)) {
             if ((this.context.replied || this.context.deferred) && followUpIfReplied)
@@ -33,4 +42,10 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         this.context.reply(options);
     }
    
+    public edit(options: string | MessagePayload | MessageEditOptions | InteractionEditReplyOptions) {
+        if (this.isInteractionContext(this.context)) 
+            this.context.editReply(options);
+        else 
+            this.context.edit(options);
+    }
 }
