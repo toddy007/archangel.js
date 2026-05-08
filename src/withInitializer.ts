@@ -9,6 +9,7 @@ import {
     InteractionEditReplyOptions,
 } from 'discord.js';
 import { Checkers } from './checkers';
+import { Options, FetchOptions } from './global';
 
 export class WithInitializer<T extends Message | ChatInputCommandInteraction> extends Checkers {
     public context: T;
@@ -62,5 +63,12 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
             
             this.context.delete();
         }
+    }
+
+    public fetchReply(options?: FetchOptions) {
+        if (this.isInteractionContext(this.context))
+            return this.context.fetchReply(options?.messageId);
+        else
+            return this.context.fetch(options?.force ?? false);
     }
 }
