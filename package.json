@@ -20,12 +20,7 @@
     "url": "https://github.com/toddy007"
   },
   "keywords": [
-    "db",
-    "database",
-    "local",
-    "localdb",
-    "localdatabase",
-    "twin"
+    
   ],
   "license": "MIT",
   "devDependencies": {
