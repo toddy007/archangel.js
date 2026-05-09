@@ -7,6 +7,7 @@ import {
     InteractionReplyOptions,
     MessageEditOptions,
     InteractionEditReplyOptions,
+    InteractionDeferReplyOptions,
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
 import { Options, FetchOptions } from '../types/global.js';
@@ -70,5 +71,17 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
             return this.context.fetchReply(options?.messageId);
         else
             return this.context.fetch(options?.force ?? false);
+    }
+
+    public deferReply(options?: InteractionDeferReplyOptions, ignoreErrorIfMessage: boolean = true) {
+        const notInteraction = !this.isInteractionContext(this.context);
+
+        if (notInteraction && ignoreErrorIfMessage)
+            return;
+        if (notInteraction)
+            throw new Error('Cannot defer reply: context is not an interaction');
+        
+        if (this.isInteractionContext(this.context))
+            return this.context.deferReply(options);
     }
 }
