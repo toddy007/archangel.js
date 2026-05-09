@@ -10,8 +10,8 @@ import {
     MessagePayload,
     InteractionDeferReplyOptions,
 } from 'discord.js';
-import { Context, Options, FetchOptions } from './global.js';
-import { Checkers } from './checkers.js';
+import { Context, Options, FetchOptions } from '../types/global.js';
+import { Checkers } from '../helpers/checkers.js';
 
 const invalidContextError = new Error("Context must be a Message or ChatInputCommandInteraction");
 const invalidNameOptionError = new Error("Invalid option 'name': expected a string");

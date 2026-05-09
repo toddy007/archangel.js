@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Message } from 'discord.js';
-import { Context } from './global.js';
+import { Context } from '../types/global.js';
 
 export abstract class Checkers {
     public checkContext(context: Context): context is Context {
