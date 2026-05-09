@@ -1,7 +1,6 @@
 import { 
     Snowflake,
-    Message, 
-    ChatInputCommandInteraction, 
+    Message,  
     MessageReplyOptions, 
     InteractionReplyOptions, 
     User, 
@@ -65,7 +64,7 @@ export abstract class NoInitializer extends Checkers {
         return context.delete();
     }
 
-    public fetchMessage(context: Context, options: FetchOptions) {
+    public fetchMessage(context: Context, options: FetchOptions = {}) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -90,7 +89,7 @@ export abstract class NoInitializer extends Checkers {
         return context.deferReply(options);
     }
 
-    public getCommandInfo(context: ChatInputCommandInteraction, returnNullIfError: boolean = false) {
+    public getCommandInfo(context: Context, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -110,7 +109,7 @@ export abstract class NoInitializer extends Checkers {
         }
     }
 
-    public getOption(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getOption(context: Context, options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -128,7 +127,7 @@ export abstract class NoInitializer extends Checkers {
         return context.options.get(options.name, options.required ?? false);
     }
 
-    public getMentionable(context: Context, options: Options, returnNullIfError: boolean = false) {
+    public getMentionable(context: Context, options: Options, returnNullIfError: boolean = true) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -156,7 +155,7 @@ export abstract class NoInitializer extends Checkers {
         return mentionable;
     }
 
-    public getUser(context: Context, options: Options, returnNullIfError: boolean = false): User | null {
+    public getUser(context: Context, options: Options, returnNullIfError: boolean = true): User | null {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -179,7 +178,7 @@ export abstract class NoInitializer extends Checkers {
         return user;
     }
 
-    public getMember(context: Context, options: Omit<Options, 'required'>, returnNullIfError: boolean = false) {
+    public getMember(context: Context, options: Omit<Options, 'required'>, returnNullIfError: boolean = true) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -202,7 +201,7 @@ export abstract class NoInitializer extends Checkers {
         return member;
     }
 
-    public getRole(context: Context, options: Options, returnNullIfError: boolean = false) {
+    public getRole(context: Context, options: Options, returnNullIfError: boolean = true) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -225,7 +224,7 @@ export abstract class NoInitializer extends Checkers {
         return role;
     }
 
-    public getChannel(context: Context, options: Options, returnNullIfError: boolean = false) {
+    public getChannel(context: Context, options: Options, returnNullIfError: boolean = true) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -248,7 +247,7 @@ export abstract class NoInitializer extends Checkers {
         return channel;
     }
 
-    public getAttachment(context: Context, options: Options, returnNullIfError: boolean = false) {
+    public getAttachment(context: Context, options: Options, returnNullIfError: boolean = true) {
         if (!this.checkContext(context))
             throw invalidContextError;
 
@@ -271,7 +270,7 @@ export abstract class NoInitializer extends Checkers {
         return attachment;
     }
 
-    public getBoolean(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getBoolean(context: Context, options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -286,7 +285,7 @@ export abstract class NoInitializer extends Checkers {
     }
 
 
-    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getInteger(context: Context, options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -300,7 +299,7 @@ export abstract class NoInitializer extends Checkers {
         return context.options.getInteger(options.name, options.required ?? false);
     }
 
-    public getNumber(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getNumber(context: Context, options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -314,7 +313,7 @@ export abstract class NoInitializer extends Checkers {
         return context.options.getNumber(options.name, options.required ?? false);
     }
 
-    public getString(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getString(context: Context, options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -328,7 +327,7 @@ export abstract class NoInitializer extends Checkers {
         return context.options.getString(options.name, options.required ?? false);
     }
 
-    public getSubcommand(context: ChatInputCommandInteraction, required: boolean = false, returnNullIfError: boolean = false) {
+    public getSubcommand(context: Context, required: boolean = false, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -339,7 +338,7 @@ export abstract class NoInitializer extends Checkers {
         return context.options.getSubcommand(required ?? false);
     }
 
-    public getSubcommandGroup(context: ChatInputCommandInteraction, required: boolean = false, returnNullIfError: boolean = false) {
+    public getSubcommandGroup(context: Context, required: boolean = false, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
