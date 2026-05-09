@@ -169,4 +169,163 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         const user = this.context.options.getUser(options.name, options.required ?? false);
         return user;
     }
+
+    public getMember(options: Omit<Options, 'required'>, returnNullIfError: boolean = false) {
+        if (this.isMessageContext(this.context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const member = this.context.mentions.members?.at(options.index);
+            return member ?? null;
+        }
+
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
+            throw invalidNameOptionError;
+        }    
+
+        const member = this.context.options.getMember(options.name);
+        return member;
+    }
+
+    public getRole(options: Options, returnNullIfError: boolean = false) {
+        if (this.isMessageContext(this.context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const role = this.context.mentions.roles.at(options.index);
+            return role ?? null;
+        }
+
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
+            throw invalidNameOptionError;
+        }
+
+        const role = this.context.options.getRole(options.name, options.required ?? false);
+        return role;
+    }
+
+    public getChannel(options: Options, returnNullIfError: boolean = false) {
+        if (this.isMessageContext(this.context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const channel = this.context.mentions.channels.at(options.index);
+            return channel ?? null;
+        }
+
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
+            throw invalidNameOptionError;
+        }
+
+        const channel = this.context.options.getChannel(options.name, options.required ?? false);
+        return channel;
+    }
+
+    public getAttachment(options: Options, returnNullIfError: boolean = false) {
+        if (this.isMessageContext(this.context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const attachment = this.context.attachments.at(options.index);
+            return attachment ?? null;
+        }
+
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
+            throw invalidNameOptionError;
+        }
+
+        const attachment = this.context.options.getAttachment(options.name, options.required ?? false);
+        return attachment;
+    }
+
+    public getBoolean(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get boolean: context is not an interaction");
+        }   
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return this.context.options.getBoolean(options.name, options.required ?? false);
+    }
+
+
+    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get integer: context is not an interaction");
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return context.options.getInteger(options.name, options.required ?? false);
+    }
+
+    public getNumber(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get number: context is not an interaction");
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return this.context.options.getNumber(options.name, options.required ?? false);
+    }
+
+    public getString(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get string: context is not an interaction");
+        }
+
+        if (typeof options.name !== 'string')
+            throw invalidNameOptionError;
+
+        return this.context.options.getString(options.name, options.required ?? false);
+    }
+
+    public getSubcommand(required: boolean = false, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get subcommand: context is not an interaction");
+        }
+
+        return this.context.options.getSubcommand(required ?? false);
+    }
+
+    public getSubcommandGroup(required: boolean = false, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+
+            throw new Error("Cannot get subcommand group: context is not an interaction");
+        }
+
+        return this.context.options.getSubcommandGroup(required ?? false);
+    } 
 }
