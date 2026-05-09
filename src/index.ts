@@ -1,7 +1,7 @@
 import { NoInitializer } from "./archangel/noInitializer.js";
 import { WithInitializer } from "./archangel/withInitializer.js";
 
-export {
+export default {
     WithInitializer,
     NoInitializer,
 }
