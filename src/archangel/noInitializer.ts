@@ -12,9 +12,7 @@ import {
 } from 'discord.js';
 import { Context, Options, FetchOptions } from '../types/global.js';
 import { Checkers } from '../helpers/checkers.js';
-
-const invalidContextError = new Error("Context must be a Message or ChatInputCommandInteraction");
-const invalidNameOptionError = new Error("Invalid option 'name': expected a string");
+import { invalidContextError, invalidNameOptionError } from '../helpers/errors.js';
 
 export abstract class NoInitializer extends Checkers {
     public getAuthor(context: Context): User {
