@@ -11,6 +11,7 @@ import {
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
 import { Options, FetchOptions } from '../types/global.js';
+import { invalidContextError, invalidNameOptionError } from '../helpers/errors.js';
 
 export class WithInitializer<T extends Message | ChatInputCommandInteraction> extends Checkers {
     public context: T;
@@ -83,5 +84,43 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         
         if (this.isInteractionContext(this.context))
             return this.context.deferReply(options);
+    }
+
+    public getCommandInfo(returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+            
+            throw new Error('Cannot get command info: context is not an interaction');
+        }
+
+        const { commandName, commandId, commandGuildId, commandType, options, context: commandContext } = this.context;
+
+        return {
+            commandName,
+            commandId,
+            commandGuildId,
+            commandType,
+            options,
+            context: commandContext,
+        }
+    }
+
+    public getOption(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+        if (!this.isInteractionContext(this.context)) {
+            if (returnNullIfError)
+                return null;
+    
+            throw new Error("Cannot get option: context is not an interaction");
+        }
+    
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+    
+            throw invalidNameOptionError;
+        }
+    
+        return this.context.options.get(options.name, options.required ?? false);
     }
 }
