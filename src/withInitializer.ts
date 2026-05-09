@@ -8,8 +8,8 @@ import {
     MessageEditOptions,
     InteractionEditReplyOptions,
 } from 'discord.js';
-import { Checkers } from './checkers';
-import { Options, FetchOptions } from './global';
+import { Checkers } from './checkers.js';
+import { Options, FetchOptions } from './global.js';
 
 export class WithInitializer<T extends Message | ChatInputCommandInteraction> extends Checkers {
     public context: T;
