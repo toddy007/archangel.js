@@ -8,10 +8,11 @@ import {
     MessageEditOptions,
     InteractionEditReplyOptions,
     InteractionDeferReplyOptions,
+    User,
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
 import { Options, FetchOptions } from '../types/global.js';
-import { invalidContextError, invalidNameOptionError } from '../helpers/errors.js';
+import { invalidNameOptionError } from '../helpers/errors.js';
 
 export class WithInitializer<T extends Message | ChatInputCommandInteraction> extends Checkers {
     public context: T;
@@ -122,5 +123,50 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         }
     
         return this.context.options.get(options.name, options.required ?? false);
+    }
+
+    public getMentionable(options: Options, returnNullIfError: boolean = false) {
+        if (this.isMessageContext(this.context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+    
+            const mentionables = {
+                member: this.context.mentions.members?.at(options.index),
+                role: this.context.mentions.roles.at(options.index),
+                user: this.context.mentions.users.at(options.index),
+            };
+    
+            return mentionables ?? null;
+        }
+    
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+    
+            throw invalidNameOptionError;
+        }
+    
+        const mentionable = this.context.options.getMentionable(options.name, options.required ?? false);
+        return mentionable;
+    }
+
+    public getUser(options: Options, returnNullIfError: boolean = false): User | null {
+        if (this.isMessageContext(this.context)) {
+            if (typeof options.index !== 'number')
+                options.index = 0;
+
+            const user = this.context.mentions.users.at(options.index);
+            return user ?? null;
+        }
+
+        if (typeof options.name !== 'string') {
+            if (returnNullIfError)
+                return null;
+
+            throw invalidNameOptionError;
+        }
+
+        const user = this.context.options.getUser(options.name, options.required ?? false);
+        return user;
     }
 }
