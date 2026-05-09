@@ -68,11 +68,11 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         }
     }
 
-    public fetchReply(options?: FetchOptions) {
+    public fetchReply(options: FetchOptions = {}) {
         if (this.isInteractionContext(this.context))
-            return this.context.fetchReply(options?.messageId);
+            return this.context.fetchReply(options.messageId);
         else
-            return this.context.fetch(options?.force ?? false);
+            return this.context.fetch(options.force || false);
     }
 
     public deferReply(options?: InteractionDeferReplyOptions, ignoreErrorIfMessage: boolean = true) {
@@ -87,7 +87,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
             return this.context.deferReply(options);
     }
 
-    public getCommandInfo(returnNullIfError: boolean = false) {
+    public getCommandInfo(returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
@@ -107,7 +107,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         }
     }
 
-    public getOption(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getOption(options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
@@ -125,7 +125,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return this.context.options.get(options.name, options.required ?? false);
     }
 
-    public getMentionable(options: Options, returnNullIfError: boolean = false) {
+    public getMentionable(options: Options, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number')
                 options.index = 0;
@@ -150,7 +150,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return mentionable;
     }
 
-    public getUser(options: Options, returnNullIfError: boolean = false): User | null {
+    public getUser(options: Options, returnNullIfError: boolean = true): User | null {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number')
                 options.index = 0;
@@ -170,7 +170,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return user;
     }
 
-    public getMember(options: Omit<Options, 'required'>, returnNullIfError: boolean = false) {
+    public getMember(options: Omit<Options, 'required'>, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number')
                 options.index = 0;
@@ -190,7 +190,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return member;
     }
 
-    public getRole(options: Options, returnNullIfError: boolean = false) {
+    public getRole(options: Options, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number')
                 options.index = 0;
@@ -210,7 +210,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return role;
     }
 
-    public getChannel(options: Options, returnNullIfError: boolean = false) {
+    public getChannel(options: Options, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number')
                 options.index = 0;
@@ -230,7 +230,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return channel;
     }
 
-    public getAttachment(options: Options, returnNullIfError: boolean = false) {
+    public getAttachment(options: Options, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number')
                 options.index = 0;
@@ -250,7 +250,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return attachment;
     }
 
-    public getBoolean(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getBoolean(options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
@@ -265,7 +265,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
     }
 
 
-    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getInteger(context: ChatInputCommandInteraction, options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(context)) {
             if (returnNullIfError)
                 return null;
@@ -279,7 +279,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return context.options.getInteger(options.name, options.required ?? false);
     }
 
-    public getNumber(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getNumber(options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
@@ -293,7 +293,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return this.context.options.getNumber(options.name, options.required ?? false);
     }
 
-    public getString(options: Omit<Options, 'index'>, returnNullIfError: boolean = false) {
+    public getString(options: Omit<Options, 'index'>, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
@@ -307,7 +307,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return this.context.options.getString(options.name, options.required ?? false);
     }
 
-    public getSubcommand(required: boolean = false, returnNullIfError: boolean = false) {
+    public getSubcommand(required: boolean = false, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
@@ -318,7 +318,7 @@ export class WithInitializer<T extends Message | ChatInputCommandInteraction> ex
         return this.context.options.getSubcommand(required ?? false);
     }
 
-    public getSubcommandGroup(required: boolean = false, returnNullIfError: boolean = false) {
+    public getSubcommandGroup(required: boolean = false, returnNullIfError: boolean = true) {
         if (!this.isInteractionContext(this.context)) {
             if (returnNullIfError)
                 return null;
