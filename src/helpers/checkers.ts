@@ -3,7 +3,12 @@ import { Context } from '../types/global.js';
 
 export abstract class Checkers {
     public checkContext(context: Context): context is Context {
-        if (!(this.isMessageContext(context) || this.isInteractionContext(context)))
+        if (
+            !(
+                this.isMessageContext(context) ||
+                this.isInteractionContext(context)
+            )
+        )
             return false;
 
         return true;
@@ -13,7 +18,9 @@ export abstract class Checkers {
         return context instanceof Message;
     }
 
-    public isInteractionContext(context: Context): context is ChatInputCommandInteraction {
+    public isInteractionContext(
+        context: Context,
+    ): context is ChatInputCommandInteraction {
         return context instanceof ChatInputCommandInteraction;
     }
 }
