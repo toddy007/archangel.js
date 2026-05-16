@@ -92,7 +92,7 @@ export abstract class NoInitializer extends Checkers {
 
     public deferReply(
         context: Context,
-        options: InteractionDeferReplyOptions,
+        options?: InteractionDeferReplyOptions,
         ignoreErrorIfMessage: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -139,7 +139,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getOption(
         context: Context,
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(context)) {
@@ -159,7 +159,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getMentionable(
         context: Context,
-        options: Options,
+        options: Options = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -191,7 +191,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getUser(
         context: Context,
-        options: Options,
+        options: Options = {},
         returnNullIfError: boolean = true,
     ): User | null {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -218,7 +218,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getMember(
         context: Context,
-        options: Omit<Options, 'required'>,
+        options: Omit<Options, 'required'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -242,7 +242,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getRole(
         context: Context,
-        options: Options,
+        options: Options = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -269,7 +269,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getChannel(
         context: Context,
-        options: Options,
+        options: Options = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -296,7 +296,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getAttachment(
         context: Context,
-        options: Options,
+        options: Options = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
@@ -323,7 +323,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getBoolean(
         context: Context,
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(context)) {
@@ -344,7 +344,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getInteger(
         context: Context,
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(context)) {
@@ -365,7 +365,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getNumber(
         context: Context,
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(context)) {
@@ -384,7 +384,7 @@ export abstract class NoInitializer extends Checkers {
 
     public getString(
         context: Context,
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(context)) {

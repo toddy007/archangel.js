@@ -144,7 +144,7 @@ export class WithInitializer<
     }
 
     public getOption(
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(this.context)) {
@@ -165,7 +165,7 @@ export class WithInitializer<
         );
     }
 
-    public getMentionable(options: Options, returnNullIfError: boolean = true) {
+    public getMentionable(options: Options = {}, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -192,7 +192,7 @@ export class WithInitializer<
     }
 
     public getUser(
-        options: Options,
+        options: Options = {},
         returnNullIfError: boolean = true,
     ): User | null {
         if (this.isMessageContext(this.context)) {
@@ -216,7 +216,7 @@ export class WithInitializer<
     }
 
     public getMember(
-        options: Omit<Options, 'required'>,
+        options: Omit<Options, 'required'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (this.isMessageContext(this.context)) {
@@ -236,7 +236,7 @@ export class WithInitializer<
         return member;
     }
 
-    public getRole(options: Options, returnNullIfError: boolean = true) {
+    public getRole(options: Options = {}, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -257,7 +257,7 @@ export class WithInitializer<
         return role;
     }
 
-    public getChannel(options: Options, returnNullIfError: boolean = true) {
+    public getChannel(options: Options = {}, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -278,7 +278,7 @@ export class WithInitializer<
         return channel;
     }
 
-    public getAttachment(options: Options, returnNullIfError: boolean = true) {
+    public getAttachment(options: Options = {}, returnNullIfError: boolean = true) {
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -300,7 +300,7 @@ export class WithInitializer<
     }
 
     public getBoolean(
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(this.context)) {
@@ -341,7 +341,7 @@ export class WithInitializer<
     }
 
     public getNumber(
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(this.context)) {
@@ -359,7 +359,7 @@ export class WithInitializer<
     }
 
     public getString(
-        options: Omit<Options, 'index'>,
+        options: Omit<Options, 'index'> = {},
         returnNullIfError: boolean = true,
     ) {
         if (!this.isInteractionContext(this.context)) {
