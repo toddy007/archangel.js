@@ -1,6 +1,6 @@
 {
   "name": "archangel.js",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "A powerfull package to make hybrid commands for Discord.js. You can create prefixed commands and slash commands in the same file.",
   "main": "dist/index.js",
   "module": "dist/index.js",
