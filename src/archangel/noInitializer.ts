@@ -9,7 +9,7 @@ import {
     MessagePayload,
     InteractionDeferReplyOptions,
 } from 'discord.js';
-import { Context, Options, FetchOptions } from '../types/global.js';
+import { Context, Options, FetchOptions, DefaultReplyTypes } from '../types/global.js';
 import { Checkers } from '../helpers/checkers.js';
 import {
     invalidContextError,
@@ -38,12 +38,12 @@ export abstract class NoInitializer extends Checkers {
 
         if (this.isInteractionContext(context)) {
             if ((context.replied || context.deferred) && followUpIfReplied)
-                // @ts-ignore
-                return context.followUp(options);
+                return context.followUp(options as DefaultReplyTypes | InteractionReplyOptions);
+
+            return context.reply(options as DefaultReplyTypes | InteractionReplyOptions);
         }
 
-        // @ts-ignore
-        return context.reply(options);
+        return context.reply(options as DefaultReplyTypes | MessageReplyOptions);
     }
 
     public edit(

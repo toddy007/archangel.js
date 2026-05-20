@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, Snowflake } from 'discord.js';
+import { ChatInputCommandInteraction, Message, Snowflake, MessagePayload } from 'discord.js';
 
 export type Context = Message | ChatInputCommandInteraction;
 
@@ -12,3 +12,5 @@ export interface FetchOptions {
     messageId?: Snowflake;
     force?: boolean;
 }
+
+export type DefaultReplyTypes = string | MessagePayload;

@@ -11,7 +11,7 @@ import {
     User,
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
-import { Options, FetchOptions } from '../types/global.js';
+import { Options, FetchOptions, DefaultReplyTypes } from '../types/global.js';
 import { invalidNameOptionError } from '../helpers/errors.js';
 
 export class WithInitializer<
@@ -53,12 +53,12 @@ export class WithInitializer<
                 (this.context.replied || this.context.deferred) &&
                 followUpIfReplied
             )
-                // @ts-ignore
-                this.context.followUp(options);
+                return this.context.followUp(options as DefaultReplyTypes | InteractionReplyOptions);
+
+            return this.context.reply(options as DefaultReplyTypes | InteractionReplyOptions);
         }
 
-        // @ts-ignore
-        this.context.reply(options);
+        return this.context.reply(options as DefaultReplyTypes | MessageReplyOptions);
     }
 
     public edit(
