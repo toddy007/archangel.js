@@ -69,27 +69,27 @@ export class WithInitializer<
             | InteractionEditReplyOptions,
     ) {
         if (this.isInteractionContext(this.context))
-            this.context.editReply(options);
+            return this.context.editReply(options);
         else {
             if (!this.context.editable)
                 throw new Error(
                     'Could not edit the message: it is not editable',
                 );
 
-            this.context.edit(options);
+            return this.context.edit(options);
         }
     }
 
     public delete(message?: Message | Snowflake) {
         if (this.isInteractionContext(this.context))
-            this.context.deleteReply(message);
+            return this.context.deleteReply(message);
         else {
             if (!this.context.deletable)
                 throw new Error(
                     'Could not delete the message: it is not deletable',
                 );
 
-            this.context.delete();
+            return this.context.delete();
         }
     }
 
