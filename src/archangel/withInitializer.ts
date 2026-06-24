@@ -11,11 +11,11 @@ import {
     User,
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
-import { Options, FetchOptions, DefaultReplyTypes } from '../types/global.js';
+import { Options, FetchOptions, DefaultReplyTypes, Context } from '../types/global.js';
 import { invalidNameOptionError } from '../helpers/errors.js';
 
 export class WithInitializer<
-    T extends Message | ChatInputCommandInteraction,
+    T extends Context = Context,
 > extends Checkers {
     public context: T;
 
