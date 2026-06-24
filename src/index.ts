@@ -1,4 +1,5 @@
 export { NoInitializer } from './archangel/noInitializer.js';
 export { WithInitializer } from './archangel/withInitializer.js';
-export type { Context } from './types/global.js';
-export type { DefaultReplyTypes } from './types/global.js';
+export { CommandContext } from './archangel/CommandContext.js';
+export { createCommandContext } from './archangel/createCommandContext.js';
+export type * from './types/global.js';
