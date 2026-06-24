@@ -35,7 +35,7 @@ export class CommandContext<T extends Context = Context> extends WithInitializer
     }
 
     get deletable() {
-        return this.isMessageContext(this.context) ? this.context.deletable : null;
+        return this.isMessageContext(this.context) ? this.context.deletable : false;
     }
 
     get applicationId() {
@@ -95,11 +95,11 @@ export class CommandContext<T extends Context = Context> extends WithInitializer
     }
 
     get deferred() {
-        return this.isInteractionContext(this.context) ? this.context.deferred : null;
+        return this.isInteractionContext(this.context) ? this.context.deferred : false;
     }
 
     get replied() {
-        return this.isInteractionContext(this.context) ? this.context.replied : null;
+        return this.isInteractionContext(this.context) ? this.context.replied : false;
     }
 
     get type() {
