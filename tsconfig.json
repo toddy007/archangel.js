@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
-        "module": "ES2022",
-        "moduleResolution": "Node",
+        "target": "ES2020",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
         "ignoreDeprecations": "6.0",
         "resolveJsonModule": true,
         "importHelpers": true,
@@ -12,7 +12,8 @@
         "skipLibCheck": true,
         "outDir": "./dist",
         "rootDir": "./src",
-        "declaration": true
+        "declaration": true,
+        "types": ["node"]
     },
     "exclude": ["node_modules"],
     "include": ["src"]
