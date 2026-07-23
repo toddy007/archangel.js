@@ -20,9 +20,7 @@ export class NoInitializer extends Checkers {
     public getAuthor(context: Context): User {
         if (!this.checkContext(context)) throw invalidContextError;
 
-        if (this.isMessageContext(context)) return context.author;
-
-        return context.user;
+        return this.isMessageContext(context) ? context.author : context.user;
     }
 
     public reply(
@@ -167,13 +165,11 @@ export class NoInitializer extends Checkers {
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
-            const mentionables = {
+            return {
                 member: context.mentions.members?.at(options.index),
                 role: context.mentions.roles.at(options.index),
                 user: context.mentions.users.at(options.index),
             };
-
-            return mentionables ?? null;
         }
 
         if (typeof options.name !== 'string') {
@@ -182,11 +178,10 @@ export class NoInitializer extends Checkers {
             throw invalidNameOptionError;
         }
 
-        const mentionable = context.options.getMentionable(
+        return context.options.getMentionable(
             options.name,
             options.required ?? false,
         );
-        return mentionable;
     }
 
     public getUser(
@@ -209,11 +204,10 @@ export class NoInitializer extends Checkers {
             throw invalidNameOptionError;
         }
 
-        const user = context.options.getUser(
+        return context.options.getUser(
             options.name,
             options.required ?? false,
         );
-        return user;
     }
 
     public getMember(
@@ -236,8 +230,7 @@ export class NoInitializer extends Checkers {
             throw invalidNameOptionError;
         }
 
-        const member = context.options.getMember(options.name);
-        return member;
+        return context.options.getMember(options.name);
     }
 
     public getRole(
@@ -260,11 +253,10 @@ export class NoInitializer extends Checkers {
             throw invalidNameOptionError;
         }
 
-        const role = context.options.getRole(
+        return context.options.getRole(
             options.name,
             options.required ?? false,
         );
-        return role;
     }
 
     public getChannel(
@@ -287,11 +279,10 @@ export class NoInitializer extends Checkers {
             throw invalidNameOptionError;
         }
 
-        const channel = context.options.getChannel(
+        return context.options.getChannel(
             options.name,
             options.required ?? false,
         );
-        return channel;
     }
 
     public getAttachment(
@@ -314,11 +305,10 @@ export class NoInitializer extends Checkers {
             throw invalidNameOptionError;
         }
 
-        const attachment = context.options.getAttachment(
+        return context.options.getAttachment(
             options.name,
             options.required ?? false,
         );
-        return attachment;
     }
 
     public getBoolean(

@@ -34,10 +34,8 @@ export class WithInitializer<
         this.context = paramContext;
     }
 
-    get author() {
-        if (this.isMessageContext(this.context)) return this.context.author;
-
-        return this.context.user;
+    get author(): User {
+        return this.isMessageContext(this.context) ? this.context.author : this.context.user;
     }
 
     public reply(
@@ -169,13 +167,11 @@ export class WithInitializer<
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
-            const mentionables = {
+            return {
                 member: this.context.mentions.members?.at(options.index),
                 role: this.context.mentions.roles.at(options.index),
                 user: this.context.mentions.users.at(options.index),
             };
-
-            return mentionables ?? null;
         }
 
         if (typeof options.name !== 'string') {
@@ -184,11 +180,10 @@ export class WithInitializer<
             throw invalidNameOptionError;
         }
 
-        const mentionable = this.context.options.getMentionable(
+        return this.context.options.getMentionable(
             options.name,
             options.required ?? false,
         );
-        return mentionable;
     }
 
     public getUser(
@@ -208,11 +203,10 @@ export class WithInitializer<
             throw invalidNameOptionError;
         }
 
-        const user = this.context.options.getUser(
+        return this.context.options.getUser(
             options.name,
             options.required ?? false,
         );
-        return user;
     }
 
     public getMember(
@@ -232,8 +226,7 @@ export class WithInitializer<
             throw invalidNameOptionError;
         }
 
-        const member = this.context.options.getMember(options.name);
-        return member;
+        return this.context.options.getMember(options.name);
     }
 
     public getRole(options: Options = {}, returnNullIfError: boolean = true) {
@@ -250,11 +243,10 @@ export class WithInitializer<
             throw invalidNameOptionError;
         }
 
-        const role = this.context.options.getRole(
+        return this.context.options.getRole(
             options.name,
             options.required ?? false,
         );
-        return role;
     }
 
     public getChannel(options: Options = {}, returnNullIfError: boolean = true) {
@@ -271,11 +263,10 @@ export class WithInitializer<
             throw invalidNameOptionError;
         }
 
-        const channel = this.context.options.getChannel(
+        return this.context.options.getChannel(
             options.name,
             options.required ?? false,
         );
-        return channel;
     }
 
     public getAttachment(options: Options = {}, returnNullIfError: boolean = true) {
@@ -292,11 +283,10 @@ export class WithInitializer<
             throw invalidNameOptionError;
         }
 
-        const attachment = this.context.options.getAttachment(
+        return this.context.options.getAttachment(
             options.name,
             options.required ?? false,
         );
-        return attachment;
     }
 
     public getBoolean(
