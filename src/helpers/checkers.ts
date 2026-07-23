@@ -3,15 +3,7 @@ import { Context } from '../types/global.js';
 
 export class Checkers {
     public checkContext(context: Context): context is Context {
-        if (
-            !(
-                this.isMessageContext(context) ||
-                this.isInteractionContext(context)
-            )
-        )
-            return false;
-
-        return true;
+        return this.isMessageContext(context) || this.isInteractionContext(context);
     }
 
     public isMessageContext(context: Context): context is Message {
