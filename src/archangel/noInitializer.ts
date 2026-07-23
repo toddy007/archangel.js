@@ -16,7 +16,7 @@ import {
     invalidNameOptionError,
 } from '../helpers/errors.js';
 
-export abstract class NoInitializer extends Checkers {
+export class NoInitializer extends Checkers {
     public getAuthor(context: Context): User {
         if (!this.checkContext(context)) throw invalidContextError;
 
