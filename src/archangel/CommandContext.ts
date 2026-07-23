@@ -2,8 +2,8 @@ import { WithInitializer } from "./withInitializer.js";
 import { Context } from '../types/global.js';
 
 export class CommandContext<T extends Context = Context> extends WithInitializer<T> {
-    public constructor(paramContext: T) {
-        super(paramContext);
+    public constructor(context: T) {
+        super(context);
     }
 
     get id() {
@@ -69,7 +69,7 @@ export class CommandContext<T extends Context = Context> extends WithInitializer
     get createdTimestamp() {
         return this.context.createdTimestamp;
     }
-    
+
     get editedAt() {
         return this.isMessageContext(this.context) ? this.context.editedAt : null;
     }
