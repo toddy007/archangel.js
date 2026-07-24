@@ -1,4 +1,4 @@
-## Important Links
+## [↗️] Important Links
 [Repository](https://github.com/toddy007/archangel.js)<br>
 [Issues](https://github.com/toddy007/archangel.js/issues)<br>
 [NPMJS](https://www.npmjs.com/package/archangel.js)
@@ -8,7 +8,7 @@ A framework for [discord.js](https://discord.js.org/) that lets you build **hybr
 
 ---
 
-# How to Use
+# [📦] How to Use
 **Installing**:
 ```bash
 npm install archangel.js discord.js
@@ -44,7 +44,7 @@ In both cases, `Context` is the type representing a command's "context" — i.e.
 
 ---
 
-# NoInitializer
+# [🧰] NoInitializer
 
 `NoInitializer` is the "stateless" base class: no `context` is stored inside the instance. You pass the `context` (the `Message` or `ChatInputCommandInteraction`) manually on **every** method call.
 
@@ -117,13 +117,13 @@ If the context isn't an interaction: returns `null` (default) or throws, dependi
 
 - **Returns:** an object with the command info, or `null`.
 
-### `getOption(context, options?, returnNullIfError?)`
+### 📁 `getOption(context, options?, returnNullIfError?)`
 
 Returns a generic command option by name (`options.name`), using `context.options.get(...)`. Only works with interactions.
 
 - **Returns:** the found option, or `null`/throws if invalid.
 
-### `getMentionable(context, options?, returnNullIfError?)`
+### 🔔 `getMentionable(context, options?, returnNullIfError?)`
 
 Returns a mention (user, member, or role) from the context.
 
@@ -131,67 +131,67 @@ For a message, uses `options.index` (default `0`) to pick the mention by positio
 
 - **Returns:** an object `{ member, role, user }` (message) or the value of `getMentionable` (interaction), possibly `null`.
 
-### `getUser(context, options?, returnNullIfError?)`
+### 👥 `getUser(context, options?, returnNullIfError?)`
 
 Returns a mentioned user. Same pattern as `getMentionable`: by index for messages, by name for interactions.
 
 - **Returns:** `User | null`.
 
-### `getMember(context, options?, returnNullIfError?)`
+### 🧑‍💼 `getMember(context, options?, returnNullIfError?)`
 
 Returns a mentioned guild member. Same index (message) / name (interaction) pattern.
 
 - **Returns:** the found member, or `null`.
 
-### `getRole(context, options?, returnNullIfError?)`
+### 🔨 `getRole(context, options?, returnNullIfError?)`
 
 Returns a mentioned role. Same index (message) / name (interaction) pattern.
 
 - **Returns:** the found role, or `null`.
 
-### `getChannel(context, options?, returnNullIfError?)`
+### #️⃣ `getChannel(context, options?, returnNullIfError?)`
 
 Returns a mentioned channel. Same index (message) / name (interaction) pattern.
 
 - **Returns:** the found channel, or `null`.
 
-### `getAttachment(context, options?, returnNullIfError?)`
+### 🖼️ `getAttachment(context, options?, returnNullIfError?)`
 
 Returns an attachment. For a message, uses `options.index` over `context.attachments`. For an interaction, uses `options.name` with `context.options.getAttachment(...)`.
 
 - **Returns:** the found attachment, or `null`.
 
-### `getBoolean(context, options?, returnNullIfError?)`
+### 🔘 `getBoolean(context, options?, returnNullIfError?)`
 
 Returns the boolean value of an option by name. **Only works with interactions** (there's no prefix-command equivalent).
 
 - **Returns:** `boolean | null`.
 
-### `getInteger(context, options?, returnNullIfError?)`
+### 1️⃣ `getInteger(context, options?, returnNullIfError?)`
 
 Returns the integer value of an option by name. Only works with interactions.
 
 - **Returns:** `number | null`.
 
-### `getNumber(context, options?, returnNullIfError?)`
+### 🔢 `getNumber(context, options?, returnNullIfError?)`
 
 Returns the numeric (float) value of an option by name. Only works with interactions.
 
 - **Returns:** `number | null`.
 
-### `getString(context, options?, returnNullIfError?)`
+### 🔠 `getString(context, options?, returnNullIfError?)`
 
 Returns the string value of an option by name. Only works with interactions.
 
 - **Returns:** `string | null`.
 
-### `getSubcommand(context, required?, returnNullIfError?)`
+### 🔗 `getSubcommand(context, required?, returnNullIfError?)`
 
 Returns the name of the subcommand used. Only works with interactions.
 
 - **Returns:** `string | null`.
 
-### `getSubcommandGroup(context, required?, returnNullIfError?)`
+### ⛓️ `getSubcommandGroup(context, required?, returnNullIfError?)`
 
 Returns the name of the subcommand group used. Only works with interactions.
 
@@ -199,7 +199,7 @@ Returns the name of the subcommand group used. Only works with interactions.
 
 ---
 
-## 3. `WithInitializer`
+# [💻] WithInitializer
 
 `WithInitializer` does the same thing as `NoInitializer`, but stores the `context` internally: it's passed once in the **constructor** and saved to the public `context` property. Because of this, every method below no longer takes a `context` parameter — they use `this.context` internally instead.
 
@@ -209,54 +209,65 @@ const cmd = new WithInitializer(context); // message or interaction
 cmd.reply('Hello!');
 cmd.getUser({ name: 'username' });
 ```
+or
+```ts
+class HelloCommand extends WithInitializer {
+    constructor(context) {
+        super(context);
+    }
+    run() {
+        this.reply('Hello!');
+    }
+}
+```
 
-If no `context` is passed to the constructor, or if it isn't a `Message`/`ChatInputCommandInteraction`, the constructor throws.
+If no `context` is passed to the constructor, or if it isn't a `Message`/`ChatInputCommandInteraction`, the constructor throws an error.
 
-### Properties
+### 🛠️ - Properties
 
-#### `context`
+#### 🔧 `context`
 
-The context (`Message` or `ChatInputCommandInteraction`) passed to the constructor. Public — can be read (and reassigned) directly.
+The context (`Message` or `ChatInputCommandInteraction`) passed to the constructor.
 
 - **Type:** `T extends Context` (generic, defaults to `Context`)
 
-#### `author` (getter)
+#### 👤 `author`
 
 Returns the author of the context: `context.author` for a message, or `context.user` for an interaction.
 
 - **Returns:** `User`
 
-### Methods
+### 🪛 - Methods
 
 These work exactly like their `NoInitializer` equivalents, but without the `context` parameter (they use `this.context`):
 
-- **`reply(options, followUpIfReplied?)`** — replies to the context.
-- **`edit(options)`** — edits the reply.
-- **`delete(message?)`** — deletes the reply.
-- **`fetchReply(options?)`** — fetches the reply message (equivalent to `NoInitializer`'s `fetchMessage`).
-- **`deferReply(options?, ignoreErrorIfMessage?)`** — defers the reply (interactions only).
-- **`getCommandInfo(returnNullIfError?)`** — returns command info (interactions only).
-- **`getOption(options?, returnNullIfError?)`** — returns a generic option by name (interactions only).
-- **`getMentionable(options?, returnNullIfError?)`** — returns a mention (index for messages, name for interactions).
-- **`getUser(options?, returnNullIfError?)`** — returns a mentioned user.
-- **`getMember(options?, returnNullIfError?)`** — returns a mentioned member.
-- **`getRole(options?, returnNullIfError?)`** — returns a mentioned role.
-- **`getChannel(options?, returnNullIfError?)`** — returns a mentioned channel.
-- **`getAttachment(options?, returnNullIfError?)`** — returns an attachment.
-- **`getBoolean(options?, returnNullIfError?)`** — returns a boolean (interactions only).
-- **`getInteger(options?, returnNullIfError?)`** — returns an integer (interactions only).
-- **`getNumber(options?, returnNullIfError?)`** — returns a number (interactions only).
-- **`getString(options?, returnNullIfError?)`** — returns a string (interactions only).
-- **`getSubcommand(required?, returnNullIfError?)`** — returns the subcommand used (interactions only).
-- **`getSubcommandGroup(required?, returnNullIfError?)`** — returns the subcommand group used (interactions only).
+- 🗣️ **`reply(options, followUpIfReplied?)`** — replies to the context.
+- 📝 **`edit(options)`** — edits the reply.
+- 🗑️ **`delete(message?)`** — deletes the reply.
+- 🔍 **`fetchReply(options?)`** — fetches the reply message (equivalent to `NoInitializer`'s `fetchMessage`).
+- ✋ **`deferReply(options?, ignoreErrorIfMessage?)`** — defers the reply (interactions only).
+- 🗂️ **`getCommandInfo(returnNullIfError?)`** — returns command info (interactions only).
+- 📁 **`getOption(options?, returnNullIfError?)`** — returns a generic option by name (interactions only).
+- 🔔 **`getMentionable(options?, returnNullIfError?)`** — returns a mention (index for messages, name for interactions).
+- 👥 **`getUser(options?, returnNullIfError?)`** — returns a mentioned user.
+- 🧑‍💼 **`getMember(options?, returnNullIfError?)`** — returns a mentioned member.
+- 🔨 **`getRole(options?, returnNullIfError?)`** — returns a mentioned role.
+- #️⃣ **`getChannel(options?, returnNullIfError?)`** — returns a mentioned channel.
+- 🖼️ **`getAttachment(options?, returnNullIfError?)`** — returns an attachment.
+- 🔘 **`getBoolean(options?, returnNullIfError?)`** — returns a boolean (interactions only).
+- 1️⃣ **`getInteger(options?, returnNullIfError?)`** — returns an integer (interactions only).
+- 🔢 **`getNumber(options?, returnNullIfError?)`** — returns a number (interactions only).
+- 🔠 **`getString(options?, returnNullIfError?)`** — returns a string (interactions only).
+- 🔗 **`getSubcommand(required?, returnNullIfError?)`** — returns the subcommand used (interactions only).
+- ⛓️ **`getSubcommandGroup(required?, returnNullIfError?)`** — returns the subcommand group used (interactions only).
 
 The return types and behavior (index vs. name, throw vs. `null`) are identical to those described in the `NoInitializer` section — the only difference is that the `context` is already embedded in the instance.
 
 ---
 
-## 4. `CommandContext`
+# [🖋️] CommandContext
 
-`CommandContext` **extends `WithInitializer`**. That means it inherits every method described in section 3 (`reply`, `edit`, `delete`, `getUser`, `getString`, etc.) — for documentation on those methods, see the [`WithInitializer` section](#3-withinitializer) above.
+`CommandContext` **extends `WithInitializer`**. That means it inherits every method described in section 3 (`reply`, `edit`, `delete`, `getUser`, `getString`, etc.) — for documentation on those methods, see the [`WithInitializer`](#withinitializer) section above.
 
 What `CommandContext` adds are **properties (getters)** that expose data from the underlying context (`Message` or `ChatInputCommandInteraction`) in a unified way. When a property only exists on one of the two context types, it returns `null` (or `false`, for booleans) on the other.
 
@@ -290,7 +301,7 @@ What `CommandContext` adds are **properties (getters)** that expose data from th
 
 ---
 
-## 5. `createCommandContext`
+# [⚙️] createCommandContext
 
 A utility function that creates and returns a `CommandContext` instance from a `context` (`Message` or `ChatInputCommandInteraction`). It's simply a shortcut for `new CommandContext(context)`.
 
@@ -314,9 +325,3 @@ Since the same `ctx` (`CommandContext`) works for both event types, this is the 
 
 - **Parameter:** `context` — `Message | ChatInputCommandInteraction`.
 - **Returns:** `CommandContext<T>` — the already-initialized instance, ready to use.
-
----
-
-## License
-
-MIT
