@@ -267,7 +267,7 @@ The return types and behavior (index vs. name, throw vs. `null`) are identical t
 
 # [🖋️] CommandContext
 
-`CommandContext` **extends `WithInitializer`**. That means it inherits every method described in section 3 (`reply`, `edit`, `delete`, `getUser`, `getString`, etc.) — for documentation on those methods, see the [`WithInitializer`](#withinitializer) section above.
+`CommandContext` **extends `WithInitializer`**. That means it inherits every method described in section 3 (`reply`, `edit`, `delete`, `getUser`, `getString`, etc.) — for documentation on those methods, see the `WithInitializer` section above.
 
 What `CommandContext` adds are **properties (getters)** that expose data from the underlying context (`Message` or `ChatInputCommandInteraction`) in a unified way. When a property only exists on one of the two context types, it returns `null` (or `false`, for booleans) on the other.
 
