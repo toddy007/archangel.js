@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
 import { Options, FetchOptions, DefaultReplyTypes, Context } from '../types/global.js';
-import { invalidNameOptionError } from '../helpers/errors.js';
+import { contextDontHaveOptions, invalidNameOptionError } from '../helpers/errors.js';
 
 export class WithInitializer<
     T extends Context = Context,
@@ -46,7 +46,7 @@ export class WithInitializer<
             | InteractionReplyOptions,
         followUpIfReplied: boolean = false,
     ) {
-        if (this.isInteractionContext(this.context)) {
+        if (this.isAnyInteractionContext(this.context)) {
             if (
                 (this.context.replied || this.context.deferred) &&
                 followUpIfReplied
@@ -66,7 +66,7 @@ export class WithInitializer<
             | MessageEditOptions
             | InteractionEditReplyOptions,
     ) {
-        if (this.isInteractionContext(this.context))
+        if (this.isAnyInteractionContext(this.context))
             return this.context.editReply(options);
         else {
             if (!this.context.editable)
@@ -79,7 +79,7 @@ export class WithInitializer<
     }
 
     public delete(message?: Message | Snowflake) {
-        if (this.isInteractionContext(this.context))
+        if (this.isAnyInteractionContext(this.context))
             return this.context.deleteReply(message);
         else {
             if (!this.context.deletable)
@@ -92,7 +92,7 @@ export class WithInitializer<
     }
 
     public fetchReply(options: FetchOptions = {}) {
-        if (this.isInteractionContext(this.context))
+        if (this.isAnyInteractionContext(this.context))
             return this.context.fetchReply(options.messageId);
         else return this.context.fetch(options.force || false);
     }
@@ -101,7 +101,7 @@ export class WithInitializer<
         options?: InteractionDeferReplyOptions,
         ignoreErrorIfMessage: boolean = true,
     ) {
-        const notInteraction = !this.isInteractionContext(this.context);
+        const notInteraction = !this.isAnyInteractionContext(this.context);
 
         if (notInteraction && ignoreErrorIfMessage) return;
         if (notInteraction)
@@ -114,7 +114,7 @@ export class WithInitializer<
     }
 
     public getCommandInfo(returnNullIfError: boolean = true) {
-        if (!this.isInteractionContext(this.context)) {
+        if (!this.isAnyInteractionContext(this.context)) {
             if (returnNullIfError) return null;
 
             throw new Error(
@@ -164,6 +164,12 @@ export class WithInitializer<
     }
 
     public getMentionable(options: Options = {}, returnNullIfError: boolean = true) {
+        if (this.isContextMenuContext(this.context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -190,6 +196,12 @@ export class WithInitializer<
         options: Options = {},
         returnNullIfError: boolean = true,
     ): User | null {
+        if (this.isContextMenuContext(this.context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -213,6 +225,12 @@ export class WithInitializer<
         options: Omit<Options, 'required'> = {},
         returnNullIfError: boolean = true,
     ) {
+        if (this.isContextMenuContext(this.context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -230,6 +248,12 @@ export class WithInitializer<
     }
 
     public getRole(options: Options = {}, returnNullIfError: boolean = true) {
+        if (this.isContextMenuContext(this.context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -250,6 +274,12 @@ export class WithInitializer<
     }
 
     public getChannel(options: Options = {}, returnNullIfError: boolean = true) {
+        if (this.isContextMenuContext(this.context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -270,6 +300,12 @@ export class WithInitializer<
     }
 
     public getAttachment(options: Options = {}, returnNullIfError: boolean = true) {
+        if (this.isContextMenuContext(this.context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(this.context)) {
             if (typeof options.index !== 'number') options.index = 0;
 

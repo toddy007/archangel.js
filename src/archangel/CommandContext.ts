@@ -26,12 +26,16 @@ export class CommandContext<T extends Context = Context> extends WithInitializer
         return this.context.channelId;
     }
 
+    get targetId() {
+        return this.isContextMenuContext(this.context) ? this.context.targetId : null;
+    }
+
     get member() {
         return this.context.member;
     }
 
     get memberPermissions() {
-        return this.isInteractionContext(this.context) ? this.context.memberPermissions : this.member?.permissions;
+        return this.isAnyInteractionContext(this.context) ? this.context.memberPermissions : this.member?.permissions;
     }
 
     get deletable() {
@@ -95,11 +99,11 @@ export class CommandContext<T extends Context = Context> extends WithInitializer
     }
 
     get deferred() {
-        return this.isInteractionContext(this.context) ? this.context.deferred : false;
+        return this.isAnyInteractionContext(this.context) ? this.context.deferred : false;
     }
 
     get replied() {
-        return this.isInteractionContext(this.context) ? this.context.replied : false;
+        return this.isAnyInteractionContext(this.context) ? this.context.replied : false;
     }
 
     get type() {

@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, Message, Snowflake, MessagePayload } from 'discord.js';
+import { ChatInputCommandInteraction, Message, Snowflake, MessagePayload, ContextMenuCommandInteraction } from 'discord.js';
 
-export type Context = Message | ChatInputCommandInteraction;
+export type Context = Message | ChatInputCommandInteraction | ContextMenuCommandInteraction;
 
 export interface Options {
     index?: number;

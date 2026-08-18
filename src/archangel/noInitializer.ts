@@ -12,6 +12,7 @@ import {
 import { Context, Options, FetchOptions, DefaultReplyTypes } from '../types/global.js';
 import { Checkers } from '../helpers/checkers.js';
 import {
+    contextDontHaveOptions,
     invalidContextError,
     invalidNameOptionError,
 } from '../helpers/errors.js';
@@ -34,7 +35,7 @@ export class NoInitializer extends Checkers {
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
 
-        if (this.isInteractionContext(context)) {
+        if (this.isAnyInteractionContext(context)) {
             if ((context.replied || context.deferred) && followUpIfReplied)
                 return context.followUp(options as DefaultReplyTypes | InteractionReplyOptions);
 
@@ -54,7 +55,7 @@ export class NoInitializer extends Checkers {
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
 
-        if (this.isInteractionContext(context))
+        if (this.isAnyInteractionContext(context))
             return context.editReply(options);
 
         if (!context.editable)
@@ -68,7 +69,7 @@ export class NoInitializer extends Checkers {
     public delete(context: Context, message?: Message | Snowflake) {
         if (!this.checkContext(context)) throw invalidContextError;
 
-        if (this.isInteractionContext(context))
+        if (this.isAnyInteractionContext(context))
             return context.deleteReply(message);
 
         if (!context.deletable)
@@ -82,7 +83,7 @@ export class NoInitializer extends Checkers {
     public fetchMessage(context: Context, options: FetchOptions = {}) {
         if (!this.checkContext(context)) throw invalidContextError;
 
-        if (this.isInteractionContext(context))
+        if (this.isAnyInteractionContext(context))
             return context.fetchReply(options.messageId);
 
         return context.fetch(options.force ?? false);
@@ -108,7 +109,7 @@ export class NoInitializer extends Checkers {
     }
 
     public getCommandInfo(context: Context, returnNullIfError: boolean = true) {
-        if (!this.isInteractionContext(context)) {
+        if (!this.isAnyInteractionContext(context)) {
             if (returnNullIfError) return null;
 
             throw new Error(
@@ -162,6 +163,12 @@ export class NoInitializer extends Checkers {
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
 
+        if (this.isContextMenuContext(context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -191,6 +198,12 @@ export class NoInitializer extends Checkers {
     ): User | null {
         if (!this.checkContext(context)) throw invalidContextError;
 
+        if (this.isContextMenuContext(context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -217,6 +230,12 @@ export class NoInitializer extends Checkers {
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
 
+        if (this.isContextMenuContext(context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -239,6 +258,12 @@ export class NoInitializer extends Checkers {
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
+
+        if (this.isContextMenuContext(context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
 
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
@@ -266,6 +291,12 @@ export class NoInitializer extends Checkers {
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
 
+        if (this.isContextMenuContext(context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
+
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
 
@@ -291,6 +322,12 @@ export class NoInitializer extends Checkers {
         returnNullIfError: boolean = true,
     ) {
         if (!this.checkContext(context)) throw invalidContextError;
+
+        if (this.isContextMenuContext(context)) {
+            if (returnNullIfError) return null;
+
+            throw contextDontHaveOptions;
+        }
 
         if (this.isMessageContext(context)) {
             if (typeof options.index !== 'number') options.index = 0;
