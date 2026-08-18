@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
+import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message, MessageContextMenuCommandInteraction, UserContextMenuCommandInteraction } from 'discord.js';
 import { Context } from '../types/global.js';
 
 export class Checkers {
@@ -18,6 +18,14 @@ export class Checkers {
 
     public isContextMenuContext(context: Context): context is ContextMenuCommandInteraction {
         return context instanceof ContextMenuCommandInteraction;
+    }
+
+    public isMessageContextMenuContext(context: Context): context is MessageContextMenuCommandInteraction {
+        return context instanceof MessageContextMenuCommandInteraction;
+    }
+
+    public isUserContextMenuContext(context: Context): context is UserContextMenuCommandInteraction {
+        return context instanceof UserContextMenuCommandInteraction;
     }
 
     public isAnyInteractionContext(context: Context): context is ChatInputCommandInteraction | ContextMenuCommandInteraction {

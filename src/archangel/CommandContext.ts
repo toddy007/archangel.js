@@ -30,6 +30,18 @@ export class CommandContext<T extends Context = Context> extends WithInitializer
         return this.isContextMenuContext(this.context) ? this.context.targetId : null;
     }
 
+    get targetMessage() {
+        return this.isMessageContextMenuContext(this.context) ? this.context.targetMessage : null;
+    }
+
+    get targetUser() {
+        return this.isUserContextMenuContext(this.context) ? this.context.targetUser : null;
+    }
+
+    get targetMember() {
+        return this.isUserContextMenuContext(this.context) ? this.context.targetMember : null;
+    }
+
     get member() {
         return this.context.member;
     }
