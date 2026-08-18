@@ -9,6 +9,9 @@ import {
     InteractionEditReplyOptions,
     InteractionDeferReplyOptions,
     User,
+    ContextMenuCommandInteraction,
+    MessageContextMenuCommandInteraction,
+    UserContextMenuCommandInteraction,
 } from 'discord.js';
 import { Checkers } from '../helpers/checkers.js';
 import { Options, FetchOptions, DefaultReplyTypes, Context } from '../types/global.js';
@@ -36,6 +39,32 @@ export class WithInitializer<
 
     get author(): User {
         return this.isMessageContext(this.context) ? this.context.author : this.context.user;
+    }
+
+    public isMessage(): this is WithInitializer & { context: Message } {
+        return this.isMessageContext(this.context);
+    }
+
+
+    public isInteraction(): this is WithInitializer & { context: ChatInputCommandInteraction } {
+        return this.isInteractionContext(this.context);
+    }
+
+
+    public isContextMenu(): this is WithInitializer & { context: ContextMenuCommandInteraction } {
+        return this.isContextMenuContext(this.context);
+    }
+
+    public isMessageContextMenu(): this is WithInitializer & { context: MessageContextMenuCommandInteraction } {
+        return this.isMessageContextMenuContext(this.context);
+    }
+
+    public isUserContextMenu(): this is WithInitializer & { context: UserContextMenuCommandInteraction } {
+        return this.isUserContextMenuContext(this.context);
+    }
+
+    public isAnyInteraction(): this is WithInitializer & { context: ChatInputCommandInteraction | ContextMenuCommandInteraction } {
+        return this.isAnyInteractionContext(this.context);
     }
 
     public reply(
@@ -91,7 +120,7 @@ export class WithInitializer<
         }
     }
 
-    public fetchReply(options: FetchOptions = {}) {
+    public fetchMessage(options: FetchOptions = {}) {
         if (this.isAnyInteractionContext(this.context))
             return this.context.fetchReply(options.messageId);
         else return this.context.fetch(options.force || false);
@@ -197,6 +226,9 @@ export class WithInitializer<
         returnNullIfError: boolean = true,
     ): User | null {
         if (this.isContextMenuContext(this.context)) {
+            if (this.isUserContextMenu())
+                return this.context.targetUser;
+
             if (returnNullIfError) return null;
 
             throw contextDontHaveOptions;
@@ -226,6 +258,9 @@ export class WithInitializer<
         returnNullIfError: boolean = true,
     ) {
         if (this.isContextMenuContext(this.context)) {
+            if (this.isUserContextMenu())
+                return this.context.targetMember;
+
             if (returnNullIfError) return null;
 
             throw contextDontHaveOptions;
